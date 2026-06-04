@@ -512,9 +512,9 @@ function QuestionScreen({
     if (questionIndex === 2) {
       setFinalDoorOpening(true)
 
-      window.setTimeout(() => {
-        onNext()
-      }, 25000)
+    window.setTimeout(() => {
+  onNext()
+}, 999999)
 
       return
     }
