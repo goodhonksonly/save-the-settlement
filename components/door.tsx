@@ -1,59 +1,16 @@
 "use client"
 
-import { useEffect, useState, type CSSProperties } from "react"
+import type { CSSProperties } from "react"
 
 interface DoorProps {
   unlockedCount: number
   isOpen?: boolean
 }
 
-const LOCKS_VISIBLE_MS = 1500
-const DOOR_OPEN_DELAY_MS = 0
+const DOOR_OPEN_DELAY = "5s"
 const DOOR_OPEN_DURATION = "20s"
 
 export function Door({ unlockedCount, isOpen = false }: DoorProps) {
-  const [showLocks, setShowLocks] = useState(true)
-  const [animatedOpen, setAnimatedOpen] = useState(false)
-  const [transitionsReady, setTransitionsReady] = useState(false)
-
-  useEffect(() => {
-    const frameOne = requestAnimationFrame(() => {
-      const frameTwo = requestAnimationFrame(() => {
-        setTransitionsReady(true)
-      })
-
-      return () => cancelAnimationFrame(frameTwo)
-    })
-
-    return () => cancelAnimationFrame(frameOne)
-  }, [])
-
-  useEffect(() => {
-    setAnimatedOpen(false)
-    setShowLocks(true)
-
-    if (!isOpen || !transitionsReady) return
-
-    const hideLocksTimer = window.setTimeout(() => {
-      setShowLocks(false)
-    }, LOCKS_VISIBLE_MS)
-
-    const openDoorTimer = window.setTimeout(() => {
-      setAnimatedOpen(true)
-    }, DOOR_OPEN_DELAY_MS)
-
-    return () => {
-      window.clearTimeout(hideLocksTimer)
-      window.clearTimeout(openDoorTimer)
-    }
-  }, [isOpen, transitionsReady])
-
-  const doorTransition = transitionsReady
-    ? `transform ${animatedOpen ? DOOR_OPEN_DURATION : "0.6s"} ${
-        animatedOpen ? "cubic-bezier(0.05, 0.01, 0.08, 1)" : "ease-out"
-      }`
-    : "none"
-
   return (
     <div className="flex items-center justify-center min-h-[320px] lg:min-h-[540px]">
       <div
@@ -92,6 +49,7 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           }}
         />
 
+        {/* LEFT DOOR */}
         <div
           style={{
             position: "absolute",
@@ -101,8 +59,10 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "left center",
-            transform: animatedOpen ? "rotateY(-82deg)" : "rotateY(0deg)",
-            transition: doorTransition,
+            transform: "rotateY(0deg)",
+            animation: isOpen
+              ? `leftDoorOpen ${DOOR_OPEN_DURATION} cubic-bezier(0.05, 0.01, 0.08, 1) ${DOOR_OPEN_DELAY} forwards`
+              : "none",
             zIndex: 3,
           }}
         >
@@ -112,6 +72,7 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           ))}
         </div>
 
+        {/* RIGHT DOOR */}
         <div
           style={{
             position: "absolute",
@@ -121,8 +82,10 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "right center",
-            transform: animatedOpen ? "rotateY(82deg)" : "rotateY(0deg)",
-            transition: doorTransition,
+            transform: "rotateY(0deg)",
+            animation: isOpen
+              ? `rightDoorOpen ${DOOR_OPEN_DURATION} cubic-bezier(0.05, 0.01, 0.08, 1) ${DOOR_OPEN_DELAY} forwards`
+              : "none",
             zIndex: 3,
           }}
         >
@@ -132,7 +95,7 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           ))}
         </div>
 
-        {showLocks && (
+        {!isOpen && (
           <div className="absolute inset-0" style={{ zIndex: 4, pointerEvents: "none" }}>
             <LockBar position={1} unlocked={unlockedCount >= 1} />
             <LockBar position={2} unlocked={unlockedCount >= 2} />
@@ -153,6 +116,26 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
               "0 4px 14px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15)",
           }}
         />
+
+        <style jsx global>{`
+          @keyframes leftDoorOpen {
+            from {
+              transform: rotateY(0deg);
+            }
+            to {
+              transform: rotateY(-82deg);
+            }
+          }
+
+          @keyframes rightDoorOpen {
+            from {
+              transform: rotateY(0deg);
+            }
+            to {
+              transform: rotateY(82deg);
+            }
+          }
+        `}</style>
       </div>
     </div>
   )
@@ -340,14 +323,8 @@ function LockBar({
             }}
           >
             <div className="absolute left-1/2 top-[5px] -translate-x-1/2">
-              <div
-                className="w-[8px] h-[8px] rounded-full"
-                style={{ background: "#2a2520" }}
-              />
-              <div
-                className="w-[3px] h-[7px] mx-auto -mt-[1px]"
-                style={{ background: "#2a2520" }}
-              />
+              <div className="w-[8px] h-[8px] rounded-full" style={{ background: "#2a2520" }} />
+              <div className="w-[3px] h-[7px] mx-auto -mt-[1px]" style={{ background: "#2a2520" }} />
             </div>
           </div>
         </div>
