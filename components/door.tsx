@@ -8,7 +8,7 @@ interface DoorProps {
 }
 
 const LOCKS_VISIBLE_MS = 1500
-const DOOR_OPEN_DELAY_MS = 5000
+const DOOR_OPEN_DELAY_MS = 0
 const DOOR_OPEN_DURATION = "20s"
 
 export function Door({ unlockedCount, isOpen = false }: DoorProps) {
