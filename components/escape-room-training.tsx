@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Door } from "@/components/door"
 import { AlertCircle, Check, X, Phone, Eye, Calendar, Clock, Award, RefreshCw, ArrowRight, AlertTriangle, DollarSign, Ban } from "lucide-react"
 
@@ -543,8 +543,18 @@ function QuestionScreen({
 }
 
 function EscapedScreen({ onContinue }: { onContinue: () => void }) {
+  const [doorOpen, setDoorOpen] = useState(false)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDoorOpen(true)
+    }, 5000)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
   return (
-    <ScreenLayout door={<Door unlockedCount={3} isOpen />}>
+    <ScreenLayout door={<Door unlockedCount={3} isOpen={doorOpen} />}>
       <Panel>
         <Eyebrow variant="green">
           <Check className="w-4 h-4" /> All Locks Unlocked
