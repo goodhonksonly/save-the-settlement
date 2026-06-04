@@ -1,8 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Door } from "@/components/door"
-import { AlertCircle, Check, X, Phone, Eye, Calendar, Clock, Award, RefreshCw, ArrowRight, AlertTriangle, DollarSign, Ban } from "lucide-react"
+import {
+  AlertCircle,
+  Check,
+  X,
+  Phone,
+  Eye,
+  Calendar,
+  Clock,
+  Award,
+  RefreshCw,
+  ArrowRight,
+  AlertTriangle,
+  DollarSign,
+  Ban,
+} from "lucide-react"
 
 type Screen =
   | "intro"
@@ -18,7 +32,8 @@ type Screen =
 const questions = [
   {
     title: "Identify the Risk",
-    situation: "The borrower made their first payment. They've now missed two payments. The account is approaching 60 days past due.",
+    situation:
+      "The borrower made their first payment. They've now missed two payments. The account is approaching 60 days past due.",
     question: "What is the critical risk?",
     answers: [
       "The borrower may need to catch up on missed payments",
@@ -26,7 +41,8 @@ const questions = [
       "The payment schedule will need to be recalculated",
     ],
     correctIndex: 1,
-    feedback: "Correct. Once the account exceeds 60 days past due, the agreement becomes null and void.",
+    feedback:
+      "Correct. Once the account exceeds 60 days past due, the agreement becomes null and void.",
   },
   {
     title: "What Happens Next?",
@@ -38,7 +54,8 @@ const questions = [
       "The agreement is suspended pending further review",
     ],
     correctIndex: 0,
-    feedback: "Correct. Once breached, the agreement is void and cannot be renegotiated. The account will fully charge off.",
+    feedback:
+      "Correct. Once breached, the agreement is void and cannot be renegotiated. The account will fully charge off.",
   },
   {
     title: "Final Consequence",
@@ -107,6 +124,7 @@ export function EscapeRoomTraining() {
       setCurrentQuestion((prev) => prev + 1)
       setSelectedAnswer(null)
       setShowFeedback(false)
+      setIsCorrect(false)
     } else {
       setScreen("escaped")
     }
@@ -148,9 +166,7 @@ export function EscapeRoomTraining() {
         `,
       }}
     >
-      {screen === "intro" && (
-        <IntroScreen onStart={() => setScreen("question")} />
-      )}
+      {screen === "intro" && <IntroScreen onStart={() => setScreen("question")} />}
 
       {screen === "question" && (
         <QuestionScreen
@@ -167,15 +183,10 @@ export function EscapeRoomTraining() {
         />
       )}
 
-      {screen === "escaped" && (
-        <EscapedScreen onContinue={() => setScreen("breached")} />
-      )}
+      {screen === "escaped" && <EscapedScreen onContinue={() => setScreen("breached")} />}
 
       {screen === "breached" && (
-        <BreachedScreen
-          onLearnMore={() => setScreen("prevention")}
-          onRestart={resetAll}
-        />
+        <BreachedScreen onLearnMore={() => setScreen("prevention")} onRestart={resetAll} />
       )}
 
       {screen === "prevention" && (
@@ -241,7 +252,9 @@ function Panel({
 }) {
   return (
     <div
-      className={`w-full ${wide ? "max-w-[760px] mx-auto" : "max-w-[560px]"} ${center ? "text-center" : ""} rounded-[20px] p-[30px] ${className}`}
+      className={`w-full ${wide ? "max-w-[760px] mx-auto" : "max-w-[560px]"} ${
+        center ? "text-center" : ""
+      } rounded-[20px] p-[30px] ${className}`}
       style={{
         border: "1px solid rgba(255,255,255,.08)",
         background: "linear-gradient(180deg, rgba(18,24,31,.82), rgba(6,8,11,.9))",
@@ -287,9 +300,7 @@ function InfoBox({
   return (
     <div
       className={`grid grid-cols-[auto_1fr] gap-3 rounded-[14px] p-[17px] my-4 ${
-        variant === "orange"
-          ? "border-[rgba(255,122,22,.78)]"
-          : "border-border"
+        variant === "orange" ? "border-[rgba(255,122,22,.78)]" : "border-border"
       }`}
       style={{
         background: "rgba(13,18,23,.78)",
@@ -301,7 +312,11 @@ function InfoBox({
         !
       </div>
       <div>
-        <div className={`text-xs uppercase tracking-[.08em] font-black mb-1 ${variant === "orange" ? "text-[#fd9f2b]" : "text-[#ffd747]"}`}>
+        <div
+          className={`text-xs uppercase tracking-[.08em] font-black mb-1 ${
+            variant === "orange" ? "text-[#fd9f2b]" : "text-[#ffd747]"
+          }`}
+        >
           {label}
         </div>
         {children}
@@ -392,7 +407,9 @@ function AnswerOption({
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`grid grid-cols-[34px_1fr_22px] gap-[13px] items-center rounded-[14px] p-4 cursor-pointer transition-all duration-150 text-[#f4eedf] ${disabled ? "cursor-default" : "hover:border-[#44505d]"}`}
+      className={`grid grid-cols-[34px_1fr_22px] gap-[13px] items-center rounded-[14px] p-4 cursor-pointer transition-all duration-150 text-[#f4eedf] ${
+        disabled ? "cursor-default" : "hover:border-[#44505d]"
+      }`}
       style={{ border: `1px solid ${borderColor}`, background: bgColor, ...extraStyles }}
     >
       <div className="w-[30px] h-[30px] rounded-full bg-[#2a2d30] grid place-items-center text-[13px] font-black">
@@ -426,8 +443,6 @@ function Feedback({ correct, children }: { correct: boolean; children: React.Rea
   )
 }
 
-// Screen Components
-
 function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
     <ScreenLayout door={<Door unlockedCount={0} />}>
@@ -437,7 +452,9 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
         </h1>
         <InfoBox label="Mission Briefing">
           <p className="text-foreground">
-            {"You're locked in. Behind this door is knowledge that could save a borrower's settlement agreement. But to escape, you must prove you understand the "}
+            {
+              "You're locked in. Behind this door is knowledge that could save a borrower's settlement agreement. But to escape, you must prove you understand the "
+            }
             <b className="text-[#ffd747]">60 days past due rule</b>
             {". One wrong move and the settlement is "}
             <b className="text-destructive">at risk</b>.
@@ -445,7 +462,8 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
         </InfoBox>
         <InfoBox label="Your Objective" variant="orange">
           <p className="text-foreground">
-            Answer three questions correctly to unlock each padlock. Once all locks are open, the door will swing free and you will escape with the knowledge to prevent settlement breaches.
+            Answer three questions correctly to unlock each padlock. Once all locks are open, the door will swing free and
+            you will escape with the knowledge to prevent settlement breaches.
           </p>
         </InfoBox>
         <div className="flex items-center gap-2 my-[18px]">
@@ -488,17 +506,52 @@ function QuestionScreen({
   onRetry: () => void
   onReset: () => void
 }) {
+  const [finalDoorOpening, setFinalDoorOpening] = useState(false)
+
+  const handleUnlockClick = () => {
+    if (questionIndex === 2) {
+      setFinalDoorOpening(true)
+
+      window.setTimeout(() => {
+        onNext()
+      }, 25000)
+
+      return
+    }
+
+    onNext()
+  }
+
+  const unlockedCount =
+    questionIndex === 2 && finalDoorOpening
+      ? 3
+      : questionIndex === 2 && showFeedback && isCorrect
+        ? 3
+        : questionIndex
+
   return (
-    <ScreenLayout door={<Door unlockedCount={questionIndex} />}>
+    <ScreenLayout
+      door={
+        <Door
+          unlockedCount={unlockedCount}
+          isOpen={questionIndex === 2 && finalDoorOpening}
+        />
+      }
+    >
       <Panel>
         <div className="text-center">
           <Eyebrow variant="orange">Lock {questionIndex + 1} of 3</Eyebrow>
-          <h2 className="text-[30px] leading-[1.08] my-3 text-center text-foreground font-bold">{question.title}</h2>
+          <h2 className="text-[30px] leading-[1.08] my-3 text-center text-foreground font-bold">
+            {question.title}
+          </h2>
         </div>
+
         <InfoBox label="Current Situation">
           <p className="font-bold text-foreground" dangerouslySetInnerHTML={{ __html: question.situation }} />
         </InfoBox>
+
         <h3 className="text-[19px] my-[14px] text-center text-foreground font-semibold">{question.question}</h3>
+
         <div className="grid gap-3">
           {question.answers.map((answer, i) => (
             <AnswerOption
@@ -508,32 +561,40 @@ function QuestionScreen({
               correct={showFeedback && isCorrect && selectedAnswer === i}
               wrong={showFeedback && !isCorrect && selectedAnswer === i}
               onClick={() => !showFeedback && setSelectedAnswer(i)}
-              disabled={showFeedback}
+              disabled={showFeedback || finalDoorOpening}
             >
               {answer}
             </AnswerOption>
           ))}
         </div>
+
         {showFeedback && (
           <Feedback correct={isCorrect}>
             {isCorrect ? question.feedback : "Not quite. Review the 60 days past due rule and try again."}
           </Feedback>
         )}
+
         <div className="text-center mt-[18px]">
           {!showFeedback ? (
             <Button onClick={onSubmit} disabled={selectedAnswer === null}>
               Submit Answer
             </Button>
           ) : isCorrect ? (
-            <Button variant="green" onClick={onNext}>
-              Unlock & Continue
+            <Button variant="green" onClick={handleUnlockClick} disabled={finalDoorOpening}>
+              {finalDoorOpening ? "Opening Door..." : "Unlock & Continue"}
             </Button>
           ) : (
             <Button onClick={onRetry}>Try Again</Button>
           )}
         </div>
+
         <div className="text-center mt-[11px]">
-          <Button variant="ghost" onClick={onReset} className="text-[13px] py-[7px] px-3">
+          <Button
+            variant="ghost"
+            onClick={onReset}
+            disabled={finalDoorOpening}
+            className="text-[13px] py-[7px] px-3"
+          >
             Reset Activity
           </Button>
         </div>
@@ -543,55 +604,25 @@ function QuestionScreen({
 }
 
 function EscapedScreen({ onContinue }: { onContinue: () => void }) {
-  const [doorOpen, setDoorOpen] = useState(false)
-  const [showMessage, setShowMessage] = useState(false)
-
-  useEffect(() => {
-    const openTimer = window.setTimeout(() => {
-      setDoorOpen(true)
-    }, 5000)
-
-    const messageTimer = window.setTimeout(() => {
-      setShowMessage(true)
-    }, 25000)
-
-    return () => {
-      window.clearTimeout(openTimer)
-      window.clearTimeout(messageTimer)
-    }
-  }, [])
-
   return (
-    <ScreenLayout door={<Door unlockedCount={3} isOpen={doorOpen} />}>
+    <ScreenLayout door={<Door unlockedCount={3} isOpen />}>
       <Panel>
         <Eyebrow variant="green">
           <Check className="w-4 h-4" /> All Locks Unlocked
         </Eyebrow>
-
-        {!showMessage ? (
-          <>
-            <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
-              Opening the Door...
-            </h1>
-            <p className="leading-[1.48] text-foreground">
-              The locks are released. Wait for the door to swing open.
-            </p>
-          </>
-        ) : (
-          <>
-            <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
-              You Escaped!
-            </h1>
-            <p className="leading-[1.48] text-foreground">
-              {"The door swings open. You've proven your understanding of the 60 days past due rule by unlocking all three padlocks. But knowledge alone isn't enough\u2014now let's see what happens when prevention fails and a settlement breaches."}
-            </p>
-            <div className="mt-6">
-              <Button variant="green" onClick={onContinue}>
-                Continue <ArrowRight className="inline w-4 h-4 ml-1" />
-              </Button>
-            </div>
-          </>
-        )}
+        <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
+          You Escaped!
+        </h1>
+        <p className="leading-[1.48] text-foreground">
+          {
+            "The door swings open. You've proven your understanding of the 60 days past due rule by unlocking all three padlocks. But knowledge alone isn't enough\u2014now let's see what happens when prevention fails and a settlement breaches."
+          }
+        </p>
+        <div className="mt-6">
+          <Button variant="green" onClick={onContinue}>
+            Continue <ArrowRight className="inline w-4 h-4 ml-1" />
+          </Button>
+        </div>
       </Panel>
     </ScreenLayout>
   )
@@ -600,7 +631,10 @@ function EscapedScreen({ onContinue }: { onContinue: () => void }) {
 function BreachedScreen({ onLearnMore, onRestart }: { onLearnMore: () => void; onRestart: () => void }) {
   return (
     <Panel wide center>
-      <div className="text-[82px] leading-none text-destructive mb-4" style={{ filter: "drop-shadow(0 0 20px rgba(255,51,75,.28))" }}>
+      <div
+        className="text-[82px] leading-none text-destructive mb-4"
+        style={{ filter: "drop-shadow(0 0 20px rgba(255,51,75,.28))" }}
+      >
         <X className="w-20 h-20 mx-auto p-4 rounded-full bg-destructive text-white" />
       </div>
       <Eyebrow variant="red">Alert</Eyebrow>
@@ -690,7 +724,9 @@ function PreventionScreen({
                   ? "border-primary bg-[rgba(17,57,36,.75)]"
                   : "border-[rgba(255,255,255,.08)] bg-[rgba(8,12,16,.72)] hover:border-[#44505d]"
               }`}
-              style={{ border: selections.has(i) ? "1px solid var(--primary)" : "1px solid rgba(255,255,255,.08)" }}
+              style={{
+                border: selections.has(i) ? "1px solid var(--primary)" : "1px solid rgba(255,255,255,.08)",
+              }}
             >
               <div className="w-[42px] h-[42px] rounded-xl bg-[#393b35] grid place-items-center text-foreground">
                 <Icon className="w-5 h-5" />
@@ -721,27 +757,21 @@ function PreventionResultsScreen({ selections, onContinue }: { selections: Set<n
             <div key={i}>
               <div
                 className={`grid grid-cols-[44px_1fr_24px] gap-[13px] items-center rounded-[14px] p-[14px_16px] ${
-                  isCorrect
-                    ? "border-primary bg-[rgba(17,57,36,.75)]"
-                    : "border-destructive bg-[rgba(50,16,24,.85)]"
+                  isCorrect ? "border-primary bg-[rgba(17,57,36,.75)]" : "border-destructive bg-[rgba(50,16,24,.85)]"
                 }`}
                 style={{ border: `1px solid ${isCorrect ? "var(--primary)" : "var(--destructive)"}` }}
               >
                 <div
                   className={`w-[42px] h-[42px] rounded-xl grid place-items-center ${
-                    isCorrect ? "bg-[rgba(32,240,127,.18)] text-primary" : "bg-[rgba(255,51,75,.18)] text-destructive"
+                    isCorrect
+                      ? "bg-[rgba(32,240,127,.18)] text-primary"
+                      : "bg-[rgba(255,51,75,.18)] text-destructive"
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="font-bold text-foreground">{opt.text}</div>
-                <div>
-                  {isCorrect ? (
-                    <Check className="w-5 h-5 text-primary" />
-                  ) : (
-                    <X className="w-5 h-5 text-destructive" />
-                  )}
-                </div>
+                <div>{isCorrect ? <Check className="w-5 h-5 text-primary" /> : <X className="w-5 h-5 text-destructive" />}</div>
               </div>
               <Feedback correct={isCorrect}>
                 <span dangerouslySetInnerHTML={{ __html: preventionFeedback[i] }} />
@@ -755,10 +785,13 @@ function PreventionResultsScreen({ selections, onContinue }: { selections: Set<n
         style={{ border: "1px solid var(--border)", background: "rgba(14,18,22,.78)" }}
       >
         <p className="text-foreground mb-2">
-          Remember: proactive monitoring and early follow-up are key to preventing breaches. Never wait passively for the borrower to reach out.
+          Remember: proactive monitoring and early follow-up are key to preventing breaches. Never wait passively for the
+          borrower to reach out.
         </p>
         <p className="text-foreground">
-          <b className="text-[#ffd747]">Remember:</b> Breach and void warning emails are automatically sent to borrowers to help prevent settlements from breaching. When borrowers call in, reinforcing these consequences can help them prioritize their payments.
+          <b className="text-[#ffd747]">Remember:</b> Breach and void warning emails are automatically sent to borrowers to
+          help prevent settlements from breaching. When borrowers call in, reinforcing these consequences can help them
+          prioritize their payments.
         </p>
       </div>
       <div className="text-center">
@@ -788,7 +821,9 @@ function CommunicationScreen({
         <h2 className="text-[30px] leading-[1.08] my-3 text-foreground font-bold">
           How would you explain this risk to the borrower?
         </h2>
-        <p className="text-foreground">Choose the best explanation to communicate the 60 days past due rule and its consequences.</p>
+        <p className="text-foreground">
+          Choose the best explanation to communicate the 60 days past due rule and its consequences.
+        </p>
       </div>
       <div className="grid gap-3 mt-6">
         {communicationOptions.map((opt, i) => (
@@ -800,9 +835,13 @@ function CommunicationScreen({
                 ? "border-primary bg-[rgba(17,57,36,.75)]"
                 : "border-[rgba(255,255,255,.08)] bg-[rgba(8,12,16,.72)] hover:border-[#44505d]"
             }`}
-            style={{ border: selected === i ? "1px solid var(--primary)" : "1px solid rgba(255,255,255,.08)" }}
+            style={{
+              border: selected === i ? "1px solid var(--primary)" : "1px solid rgba(255,255,255,.08)",
+            }}
           >
-            <div className="text-xs text-muted-foreground mb-2 px-2 py-1 bg-secondary inline-block rounded">{opt.label}</div>
+            <div className="text-xs text-muted-foreground mb-2 px-2 py-1 bg-secondary inline-block rounded">
+              {opt.label}
+            </div>
             <p className="text-foreground" dangerouslySetInnerHTML={{ __html: opt.text }} />
           </div>
         ))}
@@ -825,7 +864,9 @@ function CommunicationResultsScreen({ selected, onContinue }: { selected: number
         <h2 className="text-[30px] leading-[1.08] my-3 text-foreground font-bold">
           How would you explain this risk to the borrower?
         </h2>
-        <p className="text-foreground">Choose the best explanation to communicate the 60 days past due rule and its consequences.</p>
+        <p className="text-foreground">
+          Choose the best explanation to communicate the 60 days past due rule and its consequences.
+        </p>
       </div>
       <div className="grid gap-3">
         {communicationOptions.map((opt, i) => {
@@ -848,10 +889,11 @@ function CommunicationResultsScreen({ selected, onContinue }: { selected: number
               }}
             >
               <div className="flex justify-between items-start">
-                <div className="text-xs text-muted-foreground mb-2 px-2 py-1 bg-secondary inline-block rounded">{opt.label}</div>
-                {wasSelected && (
-                  optCorrect ? <Check className="w-5 h-5 text-primary" /> : <X className="w-5 h-5 text-destructive" />
-                )}
+                <div className="text-xs text-muted-foreground mb-2 px-2 py-1 bg-secondary inline-block rounded">
+                  {opt.label}
+                </div>
+                {wasSelected &&
+                  (optCorrect ? <Check className="w-5 h-5 text-primary" /> : <X className="w-5 h-5 text-destructive" />)}
               </div>
               <p className="text-foreground" dangerouslySetInnerHTML={{ __html: opt.text }} />
             </div>
@@ -929,7 +971,10 @@ function CompleteScreen({ onRestart }: { onRestart: () => void }) {
       </div>
       <div
         className="rounded-2xl p-[18px] text-center"
-        style={{ border: "1px solid rgba(32,240,127,.65)", background: "linear-gradient(180deg, rgba(32,240,127,.18), rgba(32,240,127,.09))" }}
+        style={{
+          border: "1px solid rgba(32,240,127,.65)",
+          background: "linear-gradient(180deg, rgba(32,240,127,.18), rgba(32,240,127,.09))",
+        }}
       >
         <span className="text-muted-foreground">Your completion code:</span>
         <strong className="block text-primary text-[30px] tracking-[.16em] mt-1">SETTLEMENT60</strong>
