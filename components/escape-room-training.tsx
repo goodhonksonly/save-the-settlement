@@ -509,15 +509,10 @@ function QuestionScreen({
   const [finalDoorOpening, setFinalDoorOpening] = useState(false)
 
   const handleUnlockClick = () => {
-    if (questionIndex === 2) {
-      setFinalDoorOpening(true)
-
-    window.setTimeout(() => {
+  if (questionIndex === 2) {
   onNext()
-}, 999999)
-
-      return
-    }
+  return
+}
 
     onNext()
   }
@@ -604,25 +599,30 @@ function QuestionScreen({
 }
 
 function EscapedScreen({ onContinue }: { onContinue: () => void }) {
+  const [doorOpen, setDoorOpen] = useState(false)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDoorOpen(true)
+    }, 5000)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
   return (
-    <ScreenLayout door={<Door unlockedCount={3} isOpen />}>
+    <ScreenLayout door={<Door unlockedCount={3} isOpen={doorOpen} />}>
       <Panel>
         <Eyebrow variant="green">
           <Check className="w-4 h-4" /> All Locks Unlocked
         </Eyebrow>
+
         <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
-          You Escaped!
+          Opening the Door...
         </h1>
+
         <p className="leading-[1.48] text-foreground">
-          {
-            "The door swings open. You've proven your understanding of the 60 days past due rule by unlocking all three padlocks. But knowledge alone isn't enough\u2014now let's see what happens when prevention fails and a settlement breaches."
-          }
+          The locks are released. The door is opening.
         </p>
-        <div className="mt-6">
-          <Button variant="green" onClick={onContinue}>
-            Continue <ArrowRight className="inline w-4 h-4 ml-1" />
-          </Button>
-        </div>
       </Panel>
     </ScreenLayout>
   )
