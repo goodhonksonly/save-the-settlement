@@ -12,7 +12,8 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
 
   useEffect(() => {
     if (isOpen) {
-      const timer = setTimeout(() => setAnimatedOpen(true), 600)
+      setAnimatedOpen(false)
+      const timer = setTimeout(() => setAnimatedOpen(true), 1500)
       return () => clearTimeout(timer)
     } else {
       setAnimatedOpen(false)
