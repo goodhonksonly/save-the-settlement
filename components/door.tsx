@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, type CSSProperties } from "react"
+import { useEffect, useState, type CSSProperties } from "react"
 
 interface DoorProps {
   unlockedCount: number
@@ -14,12 +14,25 @@ const DOOR_OPEN_DURATION = "20s"
 export function Door({ unlockedCount, isOpen = false }: DoorProps) {
   const [showLocks, setShowLocks] = useState(true)
   const [animatedOpen, setAnimatedOpen] = useState(false)
+  const [transitionsReady, setTransitionsReady] = useState(false)
+
+  useEffect(() => {
+    const frameOne = requestAnimationFrame(() => {
+      const frameTwo = requestAnimationFrame(() => {
+        setTransitionsReady(true)
+      })
+
+      return () => cancelAnimationFrame(frameTwo)
+    })
+
+    return () => cancelAnimationFrame(frameOne)
+  }, [])
 
   useEffect(() => {
     setAnimatedOpen(false)
     setShowLocks(true)
 
-    if (!isOpen) return
+    if (!isOpen || !transitionsReady) return
 
     const hideLocksTimer = window.setTimeout(() => {
       setShowLocks(false)
@@ -33,9 +46,13 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
       window.clearTimeout(hideLocksTimer)
       window.clearTimeout(openDoorTimer)
     }
-  }, [isOpen])
+  }, [isOpen, transitionsReady])
 
-  const doorIsOpen = animatedOpen
+  const doorTransition = transitionsReady
+    ? `transform ${animatedOpen ? DOOR_OPEN_DURATION : "0.6s"} ${
+        animatedOpen ? "cubic-bezier(0.05, 0.01, 0.08, 1)" : "ease-out"
+      }`
+    : "none"
 
   return (
     <div className="flex items-center justify-center min-h-[320px] lg:min-h-[540px]">
@@ -48,7 +65,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           perspectiveOrigin: "50% 50%",
         }}
       >
-        {/* Outer stone frame */}
         <div
           className="absolute rounded-t-sm"
           style={{
@@ -60,7 +76,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           }}
         />
 
-        {/* Inner frame reveal */}
         <div
           className="absolute rounded-t-sm"
           style={{
@@ -70,7 +85,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           }}
         />
 
-        {/* Dark void behind the doors */}
         <div
           className="absolute inset-0 rounded-t-sm"
           style={{
@@ -78,7 +92,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           }}
         />
 
-        {/* LEFT DOOR */}
         <div
           style={{
             position: "absolute",
@@ -88,10 +101,8 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "left center",
-            transform: doorIsOpen ? "rotateY(-82deg)" : "rotateY(0deg)",
-            transition: doorIsOpen
-              ? `transform ${DOOR_OPEN_DURATION} cubic-bezier(0.05, 0.01, 0.08, 1)`
-              : "transform 0.6s ease-out",
+            transform: animatedOpen ? "rotateY(-82deg)" : "rotateY(0deg)",
+            transition: doorTransition,
             zIndex: 3,
           }}
         >
@@ -101,7 +112,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           ))}
         </div>
 
-        {/* RIGHT DOOR */}
         <div
           style={{
             position: "absolute",
@@ -111,10 +121,8 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "right center",
-            transform: doorIsOpen ? "rotateY(82deg)" : "rotateY(0deg)",
-            transition: doorIsOpen
-              ? `transform ${DOOR_OPEN_DURATION} cubic-bezier(0.05, 0.01, 0.08, 1)`
-              : "transform 0.6s ease-out",
+            transform: animatedOpen ? "rotateY(82deg)" : "rotateY(0deg)",
+            transition: doorTransition,
             zIndex: 3,
           }}
         >
@@ -124,7 +132,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           ))}
         </div>
 
-        {/* Lock bars + padlocks */}
         {showLocks && (
           <div className="absolute inset-0" style={{ zIndex: 4, pointerEvents: "none" }}>
             <LockBar position={1} unlocked={unlockedCount >= 1} />
@@ -133,7 +140,6 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
           </div>
         )}
 
-        {/* Stone threshold */}
         <div
           className="absolute"
           style={{
@@ -200,10 +206,7 @@ function DoorLeaf({ side }: { side: "left" | "right" }) {
         />
       ))}
 
-      <div
-        className="absolute top-1/2 -translate-y-1/2"
-        style={knobPositionStyle}
-      >
+      <div className="absolute top-1/2 -translate-y-1/2" style={knobPositionStyle}>
         <div
           className="w-[14px] h-[28px] rounded-sm mb-1"
           style={{
