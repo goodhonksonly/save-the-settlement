@@ -544,13 +544,21 @@ function QuestionScreen({
 
 function EscapedScreen({ onContinue }: { onContinue: () => void }) {
   const [doorOpen, setDoorOpen] = useState(false)
+  const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const openTimer = window.setTimeout(() => {
       setDoorOpen(true)
     }, 5000)
 
-    return () => window.clearTimeout(timer)
+    const messageTimer = window.setTimeout(() => {
+      setShowMessage(true)
+    }, 25000)
+
+    return () => {
+      window.clearTimeout(openTimer)
+      window.clearTimeout(messageTimer)
+    }
   }, [])
 
   return (
@@ -559,17 +567,31 @@ function EscapedScreen({ onContinue }: { onContinue: () => void }) {
         <Eyebrow variant="green">
           <Check className="w-4 h-4" /> All Locks Unlocked
         </Eyebrow>
-        <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
-          You Escaped!
-        </h1>
-        <p className="leading-[1.48] text-foreground">
-          {"The door swings open. You've proven your understanding of the 60 days past due rule by unlocking all three padlocks. But knowledge alone isn't enough\u2014now let's see what happens when prevention fails and a settlement breaches."}
-        </p>
-        <div className="mt-6">
-          <Button variant="green" onClick={onContinue}>
-            Continue <ArrowRight className="inline w-4 h-4 ml-1" />
-          </Button>
-        </div>
+
+        {!showMessage ? (
+          <>
+            <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
+              Opening the Door...
+            </h1>
+            <p className="leading-[1.48] text-foreground">
+              The locks are released. Wait for the door to swing open.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-[38px] lg:text-[46px] leading-[1.04] tracking-[-1.6px] my-[18px] text-foreground font-bold">
+              You Escaped!
+            </h1>
+            <p className="leading-[1.48] text-foreground">
+              {"The door swings open. You've proven your understanding of the 60 days past due rule by unlocking all three padlocks. But knowledge alone isn't enough\u2014now let's see what happens when prevention fails and a settlement breaches."}
+            </p>
+            <div className="mt-6">
+              <Button variant="green" onClick={onContinue}>
+                Continue <ArrowRight className="inline w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </>
+        )}
       </Panel>
     </ScreenLayout>
   )
