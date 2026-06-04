@@ -1,11 +1,25 @@
 "use client"
 
+import { useState, useEffect } from "react"
+
 interface DoorProps {
   unlockedCount: number
   isOpen?: boolean
 }
 
 export function Door({ unlockedCount, isOpen = false }: DoorProps) {
+  const [animatedOpen, setAnimatedOpen] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => setAnimatedOpen(true), 600)
+      return () => clearTimeout(timer)
+    } else {
+      setAnimatedOpen(false)
+    }
+  }, [isOpen])
+
+  const doorIsOpen = animatedOpen
   return (
     <div className="flex items-center justify-center min-h-[320px] lg:min-h-[540px]">
       <div
@@ -51,8 +65,8 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "left center",
-            transform: isOpen ? "rotateY(-82deg)" : "rotateY(0deg)",
-            transition: isOpen
+            transform: doorIsOpen ? "rotateY(-82deg)" : "rotateY(0deg)",
+            transition: doorIsOpen
               ? "transform 12s cubic-bezier(0.05, 0.01, 0.08, 1)"
               : "transform 0.6s ease-out",
             zIndex: 3,
@@ -75,8 +89,8 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
             height: "100%",
             transformStyle: "preserve-3d",
             transformOrigin: "right center",
-            transform: isOpen ? "rotateY(82deg)" : "rotateY(0deg)",
-            transition: isOpen
+            transform: doorIsOpen ? "rotateY(82deg)" : "rotateY(0deg)",
+            transition: doorIsOpen
               ? "transform 12s cubic-bezier(0.05, 0.01, 0.08, 1)"
               : "transform 0.6s ease-out",
             zIndex: 3,
@@ -90,7 +104,7 @@ export function Door({ unlockedCount, isOpen = false }: DoorProps) {
         </div>
 
         {/* Lock bars + padlocks */}
-        {!isOpen && (
+        {!doorIsOpen && (
           <div className="absolute inset-0" style={{ zIndex: 4, pointerEvents: "none" }}>
             <LockBar position={1} unlocked={unlockedCount >= 1} />
             <LockBar position={2} unlocked={unlockedCount >= 2} />
