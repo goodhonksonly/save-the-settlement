@@ -771,7 +771,7 @@ function CommunicationScreen({
             style={{ border: selected === i ? "1px solid var(--primary)" : "1px solid rgba(255,255,255,.08)" }}
           >
             <div className="text-xs text-muted-foreground mb-2 px-2 py-1 bg-secondary inline-block rounded">{opt.label}</div>
-            <p className={`text-foreground ${opt.correct ? "font-bold" : ""}`} dangerouslySetInnerHTML={{ __html: opt.text }} />
+            <p className="text-foreground" dangerouslySetInnerHTML={{ __html: opt.text }} />
           </div>
         ))}
       </div>
@@ -821,7 +821,7 @@ function CommunicationResultsScreen({ selected, onContinue }: { selected: number
                   optCorrect ? <Check className="w-5 h-5 text-primary" /> : <X className="w-5 h-5 text-destructive" />
                 )}
               </div>
-              <p className={`text-foreground ${opt.correct ? "font-bold" : ""}`} dangerouslySetInnerHTML={{ __html: opt.text }} />
+              <p className="text-foreground" dangerouslySetInnerHTML={{ __html: opt.text }} />
             </div>
           )
         })}
